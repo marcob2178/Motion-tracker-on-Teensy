@@ -105,6 +105,8 @@ public:
         releaseButton();
     }
 
+
+    //ignore, just testing code
     void doCalibration()
     {
         if (Serial.available() > 0)

@@ -45,7 +45,7 @@ public:
 
     double isJumping()
     {
-        return getJumpingPower() > 10;
+        return getJumpingPower() > MINIMUM_JUMP_POWER;
     }
     //===========================================================
     //  bend logic
@@ -100,7 +100,7 @@ public:
 
     bool isBending()
     {
-        return getBendingPower() > 5;
+        return getBendingPower() > CHEST_MINIMUM_BENDING;
     }
 };
 

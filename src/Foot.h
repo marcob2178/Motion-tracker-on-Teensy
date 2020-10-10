@@ -68,7 +68,7 @@ public:
 
     bool isCruiseControl()
     {
-        return rTimeCounter > 500;
+        return rTimeCounter > REQURIED_TIME;
     }
 
     int getCruiseControlPower()
@@ -156,7 +156,7 @@ public:
 
     bool isStepBack()
     {
-        return getStepBackPower() > 200;
+        return getStepBackPower() > MIN_BACKSTEP_POWER;
     }
 
     //
@@ -169,7 +169,7 @@ public:
 
     bool isSideStep()
     {
-        return getSidePower() > 200;
+        return getSidePower() > MIN_SIDESTEP_POWER;
     }
 
     // tools
