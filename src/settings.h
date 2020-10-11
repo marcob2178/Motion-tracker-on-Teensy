@@ -32,9 +32,9 @@ Please follow all instructions written near to the some setting or option.
 //====================================
 //  axes setting
 //  add - if you need it inverted, like '-1'
-#define AXE_Y_INVERTED -1
+#define AXE_Y_INVERTED 1
 //  add - if you need it inverted, like '-1'
-#define AXE_X_INVERTED -1
+#define AXE_X_INVERTED 1
 
 //====================================
 //  main settings
