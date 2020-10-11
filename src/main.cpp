@@ -11,6 +11,13 @@
 /*  
 TODO: 
 
+
+2) add setting for invert axes on all sensors
+
+3) add in setting ps4/vr controller pressing button swith setup
+
+4) i made a temporary uno with 2 accell and a shield to test button press for curiosity
+
 What is on the milestone list is this:  
 
 - vr joystick press /drift 
@@ -351,23 +358,49 @@ void translateWalking()
 
 void translateBending()
 {
-  if (chest->isBending())
+  // if (chest->isBending())
+  // {
+  if ((chestAccel->getRoll() < -CHEST_BACKWARD_MIN) || (chestAccel->getRoll() > CHEST_FORWARD_MIN))
   {
-    //if(chestAccel->getRoll() <CHEST_BACKWARD_MIN)
     if (chestAccel->getRoll() < 0)
-      left_y = map(-chestAccel->getRoll(), 0, CHEST_BACKWARD_MAX, 0, -100);
+      left_y = map(-chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_BACKWARD_MAX : CHEST_BACKWARD_MAX, 0, -100);
     else
-      left_y = map(-chestAccel->getRoll(), 0, -CHEST_FORWARD_MAX, 0, 100);
-
-    //calculating of right-left/horizontal movement
-    if (chestAccel->getPitch() < 0)
-      left_x = map(-chestAccel->getPitch(), 0, CHEST_RIGHT_MAX, 0, 100);
-    else
-      left_x = map(-chestAccel->getPitch(), 0, -CHEST_LEFT_MAX, 0, -100);
-    xchanged = true;
+      left_y = map(-chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * -CHEST_FORWARD_MAX : -CHEST_FORWARD_MAX, 0, 100);
     ychanged = true;
   }
+
+  //calculating of right-left/horizontal movement
+  if ((chestAccel->getPitch() < -CHEST_RIGHT_MIN) || (chestAccel->getPitch() > CHEST_LEFT_MIN))
+  {
+    if (chestAccel->getPitch() < 0)
+      left_x = map(-chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_RIGHT_MAX : CHEST_RIGHT_MAX, 0, 100);
+    else
+      left_x = map(-chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * -CHEST_LEFT_MAX : -CHEST_LEFT_MAX, 0, -100);
+    xchanged = true;
+  }
+  //gotcha
+  // }
 }
+
+// void translateBending()
+// {
+//   if (chest->isBending())
+//   {
+//     //if(chestAccel->getRoll() <CHEST_BACKWARD_MIN)
+//     if (chestAccel->getRoll() < 0)
+//       left_y = map(-chestAccel->getRoll(), 0, CHEST_BACKWARD_MAX, 0, -100);
+//     else
+//       left_y = map(-chestAccel->getRoll(), 0, -CHEST_FORWARD_MAX, 0, 100);
+
+//     //calculating of right-left/horizontal movement
+//     if (chestAccel->getPitch() < 0)
+//       left_x = map(-chestAccel->getPitch(), 0, CHEST_RIGHT_MAX, 0, 100);
+//     else
+//       left_x = map(-chestAccel->getPitch(), 0, -CHEST_LEFT_MAX, 0, -100);
+//     xchanged = true;
+//     ychanged = true;
+//   }
+// }
 
 void translateCruiseControl()
 {
@@ -458,9 +491,7 @@ void translateTheMovement()
 
   //jump
   if (chest->isJumping())
-  {
     right_button_state = 1;
-  }
   else
     right_button_state = 0;
 
@@ -495,8 +526,8 @@ void updateJoysticks()
   if (right_y < -100)
     right_y = -100;
 
-  leftJoystick.setHor(-left_x);
-  leftJoystick.setVer(-left_y);
+  leftJoystick.setHor(-left_x * AXE_X_INVERTED);
+  leftJoystick.setVer(-left_y * AXE_Y_INVERTED);
 
   if (left_button_state == 1)
     leftJoystick.pressButton();

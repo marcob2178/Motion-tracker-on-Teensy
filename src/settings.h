@@ -1,5 +1,6 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
+
 /*
 All this section is related to algorithm and code tuning, 
 Please follow all instructions written near to the some setting or option.
@@ -29,14 +30,21 @@ Please follow all instructions written near to the some setting or option.
 //========================================================================
 
 //====================================
+//  axes setting
+//  add - if you need it inverted, like '-1'
+#define AXE_Y_INVERTED -1
+//  add - if you need it inverted, like '-1'
+#define AXE_X_INVERTED -1
+
+//====================================
 //  main settings
 #define CALCULATING_PERIOD  10  //  DANGEROUS TO CHANGE!!! that's period of the all measuring
-#define FEET_ANGLE          10  //  minimum angle of step detecting
+#define FEET_ANGLE 10           //  minimum angle of step detecting
 
 //====================================
 //  calibrating time
-#define CALIBRATING_DURATION    1500   
-#define CALIBRATING_PERIOD      50
+#define CALIBRATING_DURATION 1500
+#define CALIBRATING_PERIOD 50
 
 //====================================
 //  jump
@@ -48,58 +56,59 @@ Please follow all instructions written near to the some setting or option.
 
 //====================================
 //  chest bending algorithm, no negative values, use absolute. Takes an effect to USUAL BENDING algorithm!!
-#define CHEST_MINIMUM_BENDING   5
+#define RUNNING_BENDING_COEFF 0.5f // more value - more sensitivity while running
 
-#define CHEST_FORWARD_MIN       5  // degrees
-#define CHEST_FORWARD_MAX       25 // degrees
+#define CHEST_MINIMUM_BENDING 5
 
-#define CHEST_BACKWARD_MIN      5  // degrees
-#define CHEST_BACKWARD_MAX      25 // degrees
+#define CHEST_FORWARD_MIN 5  // degrees
+#define CHEST_FORWARD_MAX 25 // degrees
 
-#define CHEST_LEFT_MIN          5  // degrees
-#define CHEST_LEFT_MAX          25 // degrees
+#define CHEST_BACKWARD_MIN 0  // degrees
+#define CHEST_BACKWARD_MAX 25 // degrees
 
-#define CHEST_RIGHT_MIN         5  // degrees
-#define CHEST_RIGHT_MAX         25 // degrees
+#define CHEST_LEFT_MIN 5  // degrees
+#define CHEST_LEFT_MAX 25 // degrees
+
+#define CHEST_RIGHT_MIN 5  // degrees
+#define CHEST_RIGHT_MAX 25 // degrees
 
 //====================================
-//  walking algorithm tunning 
+//  walking algorithm tunning
 //  tunable parameters - all defined for range 0-100
-#define WALK_SENSITIVITY        35          //  physical movement intensity to game walking speed \
+#define WALK_SENSITIVITY 35        //  physical movement intensity to game walking speed \
                                             //  higher value - less motion required to move faster
-#define RESPONSIVENESS_COEFF    100         //  how fast changes in motion would affect game walking speed
-#define DEAD_ZONE               30          //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
+#define RESPONSIVENESS_COEFF 100   //  how fast changes in motion would affect game walking speed
+#define DEAD_ZONE 30               //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
                                             //  walking speed of 5 would result in game action of 35
-#define HYSTERESYS_COEFFICIENT  90          //  higher value results in more constant speed, but low sensitivity \
+#define HYSTERESYS_COEFFICIENT 90  //  higher value results in more constant speed, but low sensitivity \
                                             //  for speed change. Lower value results in high sensitivity to speed change, but unstable speed
-#define USE_DIGIPOT_REMAP       0           //  1 for on, 0 for off
-#define DIGIPOT_RESISTANCE_KOHM 50          //  resistance of installed digipot
+#define USE_DIGIPOT_REMAP 0        //  1 for on, 0 for off
+#define DIGIPOT_RESISTANCE_KOHM 50 //  resistance of installed digipot
 
 //====================================
 //  cruise control
-#define CRUISE_MIN_ANGLE            10
-#define CRUISE_MAX_ANGLE            40
-#define CRUISE_MIN_JOYSTICK_VALUE   25
-#define CRUISE_MAX_JOYSTICK_VALUE   100
+#define CRUISE_MIN_ANGLE 10
+#define CRUISE_MAX_ANGLE 40
+#define CRUISE_MIN_JOYSTICK_VALUE 25
+#define CRUISE_MAX_JOYSTICK_VALUE 100
 
-#define REQURIED_TIME               500
+#define REQURIED_TIME 500
 
 //====================================
 //  weight sensors
-#define MIN_BACKSTEP_POWER          200   
-#define MIN_SIDESTEP_POWER          200
+#define MIN_BACKSTEP_POWER 200
+#define MIN_SIDESTEP_POWER 200
 
 //  side weight sensors, same for left and right
-#define RIGHT_BACK_MIN_POWER        200
-#define RIGHT_BACK_MAX_POWER        550
-#define LEFT_BACK_MIN_POWER         200
-#define LEFT_BACK_MAX_POWER         550
+#define RIGHT_BACK_MIN_POWER 200
+#define RIGHT_BACK_MAX_POWER 550
+#define LEFT_BACK_MIN_POWER 200
+#define LEFT_BACK_MAX_POWER 550
 //  back weight sensors
-#define RIGHT_SIDE_MIN_POWER        200
-#define RIGHT_SIDE_MAX_POWER        550
-#define LEFT_SIDE_MIN_POWER         200
-#define LEFT_SIDE_MAX_POWER         550
-
+#define RIGHT_SIDE_MIN_POWER 200
+#define RIGHT_SIDE_MAX_POWER 550
+#define LEFT_SIDE_MIN_POWER 200
+#define LEFT_SIDE_MAX_POWER 550
 
 //========================================================================
 //  Pinout for TEENSY (do not edit without serious purpose)
