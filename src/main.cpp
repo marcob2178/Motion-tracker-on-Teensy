@@ -378,7 +378,7 @@ void translateCruiseControl()
   {
     left_y = map(rightFoot->getCruiseControlPower(),
                  CRUISE_MIN_ANGLE,
-                 CRUISE_MIN_ANGLE,
+                 CRUISE_MAX_ANGLE,
                  CRUISE_MIN_JOYSTICK_VALUE,
                  CRUISE_MAX_JOYSTICK_VALUE);
     ychanged = true;
@@ -388,7 +388,7 @@ void translateCruiseControl()
   {
     left_y = map(leftFoot->getCruiseControlPower(),
                  CRUISE_MIN_ANGLE,
-                 CRUISE_MIN_ANGLE,
+                 CRUISE_MAX_ANGLE,
                  CRUISE_MIN_JOYSTICK_VALUE,
                  CRUISE_MAX_JOYSTICK_VALUE);
     ychanged = true;

@@ -121,7 +121,7 @@ Please follow all instructions written near to the some setting or option.
 
 #define RIGHT_ACCEL_TWI_ADRESS 0x28
 #define LEFT_ACCEL_TWI_ADRESS 0x29
-#define CHEST_ACCEL_TWI_ADRESS 0x29
+#define CHEST_ACCEL_TWI_ADRESS 0x28
 
 #define CUSTON_UART_SPEED 2000000
 #define CUSTOM_WIRE_SPEED 400000
