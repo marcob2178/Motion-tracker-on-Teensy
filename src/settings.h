@@ -9,7 +9,10 @@ Please follow all instructions written near to the some setting or option.
 //========================================================================
 //  JOYSTICK
 //========================================================================
+#define TYPE_PS4 1
+#define TYPE_STEAM_KNUCKLES 2
 
+#define TYPE_OF_CONTROOLER TYPE_STEAM_KNUCKLES
 //calibration values for detecting center and limit values of the joystick's cross
 #define RIGHT_HORIZONT_MIN 36
 #define RIGHT_HORIZONT_MAX 243

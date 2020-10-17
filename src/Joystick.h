@@ -22,10 +22,7 @@
     press1 = 0;
   }
 */
-#define TYPE_PS4 1
-#define TYPE_STEAM_KNUCKLES 2
 
-#define TYPE_OF_CONTROOLER TYPE_STEAM_KNUCKLES
 
 class Joystick
 {
