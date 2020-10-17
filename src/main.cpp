@@ -16,11 +16,8 @@ TODO:
 
 3) add in setting ps4/vr controller pressing button swith setup
 
-4) i made a temporary uno with 2 accell and a shield to test button press for curiosity
-
 What is on the milestone list is this:  
 
-- vr joystick press /drift 
 - clean code 
 - optimize walk/run algorithm / continue fine tuning code for locomotion features
 - create gui
@@ -75,8 +72,8 @@ Foot *leftFoot;
 void setup()
 {
   Serial.begin(CUSTON_UART_SPEED);
-  while (!Serial)
-    ;
+
+  ;
   Serial.println("Started!");
 
   Wire.begin();
@@ -99,10 +96,10 @@ void setup()
   rightShoeAccel = new AccelBNO055(2, LEFT_ACCEL_TWI_ADRESS, &Wire);
   leftShoeAccel = new AccelBNO055(3, RIGHT_ACCEL_TWI_ADRESS, &Wire);
 
-  rightSideFoot = new WeightSensor(Sensor_SR);
-  rightBackFoot = new WeightSensor(Sensor_BR);
-  leftSideFoot = new WeightSensor(Sensor_SL);
-  leftBackFoot = new WeightSensor(Sensor_BL);
+  rightSideFoot = new WeightSensor(Sensor_SL);
+  rightBackFoot = new WeightSensor(Sensor_BL);
+  leftSideFoot = new WeightSensor(Sensor_SR);
+  leftBackFoot = new WeightSensor(Sensor_BR);
 
   chest = new Chest(chestAccel);
   rightFoot = new Foot(rightShoeAccel, rightSideFoot, rightBackFoot);
@@ -353,6 +350,7 @@ void translateWalking()
   {
     left_y = walk_speed;
     ychanged = true;
+    left_y *= WALKING_Y_INVERTED;
   }
 }
 
@@ -363,23 +361,25 @@ void translateBending()
   if ((chestAccel->getRoll() < -CHEST_BACKWARD_MIN) || (chestAccel->getRoll() > CHEST_FORWARD_MIN))
   {
     if (chestAccel->getRoll() < 0)
-      left_y = map(-chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_BACKWARD_MAX : CHEST_BACKWARD_MAX, 0, -100);
+      left_y = map(chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_BACKWARD_MAX : CHEST_BACKWARD_MAX, 0, 100);
     else
-      left_y = map(-chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * -CHEST_FORWARD_MAX : -CHEST_FORWARD_MAX, 0, 100);
+      left_y = map(-chestAccel->getRoll(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_FORWARD_MAX : CHEST_FORWARD_MAX, 0, -100);
     ychanged = true;
+
+    left_y *= BENDING_Y_INVERTED;
   }
 
   //calculating of right-left/horizontal movement
   if ((chestAccel->getPitch() < -CHEST_RIGHT_MIN) || (chestAccel->getPitch() > CHEST_LEFT_MIN))
   {
     if (chestAccel->getPitch() < 0)
-      left_x = map(-chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_RIGHT_MAX : CHEST_RIGHT_MAX, 0, 100);
+      left_x = map(chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_RIGHT_MAX : CHEST_RIGHT_MAX, 0, 100);
     else
-      left_x = map(-chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * -CHEST_LEFT_MAX : -CHEST_LEFT_MAX, 0, -100);
+      left_x = map(-chestAccel->getPitch(), 0, ychanged ? RUNNING_BENDING_COEFF * CHEST_LEFT_MAX : CHEST_LEFT_MAX, 0, -100);
     xchanged = true;
+
+    left_x *= BENDING_X_INVERTED;
   }
-  //gotcha
-  // }
 }
 
 // void translateBending()
@@ -387,7 +387,7 @@ void translateBending()
 //   if (chest->isBending())
 //   {
 //     //if(chestAccel->getRoll() <CHEST_BACKWARD_MIN)
-//     if (chestAccel->getRoll() < 0)
+//     if (chestAccel->getRoentOutput = 0;ll() < 0)
 //       left_y = map(-chestAccel->getRoll(), 0, CHEST_BACKWARD_MAX, 0, -100);
 //     else
 //       left_y = map(-chestAccel->getRoll(), 0, -CHEST_FORWARD_MAX, 0, 100);
@@ -415,6 +415,7 @@ void translateCruiseControl()
                  CRUISE_MIN_JOYSTICK_VALUE,
                  CRUISE_MAX_JOYSTICK_VALUE);
     ychanged = true;
+    left_y *= CRUISE_Y_INVERTED;
   }
 
   if (leftFoot->isCruiseControl())
@@ -425,6 +426,7 @@ void translateCruiseControl()
                  CRUISE_MIN_JOYSTICK_VALUE,
                  CRUISE_MAX_JOYSTICK_VALUE);
     ychanged = true;
+     left_y *= CRUISE_Y_INVERTED;
   }
 }
 
@@ -434,11 +436,13 @@ void translateSideMoving()
   {
     left_x = map(rightFoot->getSidePower(), RIGHT_SIDE_MIN_POWER, RIGHT_SIDE_MAX_POWER, 0, 100);
     xchanged = true;
+    left_x *= WEIGHT_SIDE_X_INVERTED;
   }
   else if (leftFoot->isSideStep())
   {
     left_x = -map(leftFoot->getSidePower(), LEFT_SIDE_MIN_POWER, LEFT_SIDE_MAX_POWER, 0, 100);
     xchanged = true;
+    left_x *= WEIGHT_SIDE_X_INVERTED;
   }
 }
 
@@ -446,14 +450,16 @@ void translateBackMoving()
 {
   if (rightFoot->isStepBack())
   {
-    left_y = -map(rightFoot->getStepBackPower(), RIGHT_BACK_MIN_POWER, RIGHT_BACK_MAX_POWER, 0, 100);
+    left_y = map(rightFoot->getStepBackPower(), RIGHT_BACK_MIN_POWER, RIGHT_BACK_MAX_POWER, 0, 100);
     ychanged = true;
+    left_y *= WEIGHT_BACK_Y_INVERTED;
   }
 
   else if (leftFoot->isStepBack())
   {
-    left_y = -map(leftFoot->getStepBackPower(), LEFT_BACK_MIN_POWER, LEFT_BACK_MAX_POWER, 0, 100);
+    left_y = map(leftFoot->getStepBackPower(), LEFT_BACK_MIN_POWER, LEFT_BACK_MAX_POWER, 0, 100);
     ychanged = true;
+    left_y *= WEIGHT_BACK_Y_INVERTED;
   }
 }
 
@@ -526,8 +532,8 @@ void updateJoysticks()
   if (right_y < -100)
     right_y = -100;
 
-  leftJoystick.setHor(-left_x * AXE_X_INVERTED);
-  leftJoystick.setVer(-left_y * AXE_Y_INVERTED);
+  leftJoystick.setVer(left_y * ALL_AXE_Y_INVERTED);
+  leftJoystick.setHor(left_x * ALL_AXE_X_INVERTED);
 
   if (left_button_state == 1)
     leftJoystick.pressButton();

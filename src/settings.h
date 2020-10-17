@@ -31,15 +31,29 @@ Please follow all instructions written near to the some setting or option.
 
 //====================================
 //  axes setting
-//  add - if you need it inverted, like '-1'
-#define AXE_Y_INVERTED 1
-//  add - if you need it inverted, like '-1'
-#define AXE_X_INVERTED 1
+#define INVERTED -1
+#define NORMAL 1
+
+//  global, takes an effect to all axes settings 
+#define ALL_AXE_Y_INVERTED          NORMAL
+#define ALL_AXE_X_INVERTED          NORMAL
+
+// separate
+#define BENDING_X_INVERTED          INVERTED
+#define BENDING_Y_INVERTED          NORMAL
+
+#define WALKING_Y_INVERTED          INVERTED
+
+#define CRUISE_Y_INVERTED           INVERTED
+
+#define WEIGHT_SIDE_X_INVERTED      INVERTED
+
+#define WEIGHT_BACK_Y_INVERTED      NORMAL
 
 //====================================
 //  main settings
-#define CALCULATING_PERIOD  10  //  DANGEROUS TO CHANGE!!! that's period of the all measuring
-#define FEET_ANGLE 10           //  minimum angle of step detecting
+#define CALCULATING_PERIOD 10 //  DANGEROUS TO CHANGE!!! that's period of the all measuring
+#define FEET_ANGLE 10         //  minimum angle of step detecting
 
 //====================================
 //  calibrating time
@@ -56,15 +70,14 @@ Please follow all instructions written near to the some setting or option.
 
 //====================================
 //  chest bending algorithm, no negative values, use absolute. Takes an effect to USUAL BENDING algorithm!!
-#define RUNNING_BENDING_COEFF 0.5f // more value - more sensitivity while running
 
 #define CHEST_MINIMUM_BENDING 5
 
 #define CHEST_FORWARD_MIN 5  // degrees
 #define CHEST_FORWARD_MAX 25 // degrees
 
-#define CHEST_BACKWARD_MIN 0  // degrees
-#define CHEST_BACKWARD_MAX 25 // degrees
+#define CHEST_BACKWARD_MIN 5  // degrees
+#define CHEST_BACKWARD_MAX 15 // degrees
 
 #define CHEST_LEFT_MIN 5  // degrees
 #define CHEST_LEFT_MAX 25 // degrees
@@ -72,18 +85,26 @@ Please follow all instructions written near to the some setting or option.
 #define CHEST_RIGHT_MIN 5  // degrees
 #define CHEST_RIGHT_MAX 25 // degrees
 
+//  integration with running
+#define ENABLE_RUNNING_BENDING_ALG 0 // 1 for enable, 0 for
+
+#if ENABLE_RUNNING_BENDING_ALG == 1
+#define RUNNING_BENDING_COEFF 0.5f // more value - more sensitivity while running
+#else
+#define RUNNING_BENDING_COEFF 1
+#endif
 //====================================
 //  walking algorithm tunning
 //  tunable parameters - all defined for range 0-100
-#define WALK_SENSITIVITY 35        //  physical movement intensity to game walking speed \
+#define WALK_SENSITIVITY 25       //  physical movement intensity to game walking speed \
                                             //  higher value - less motion required to move faster
-#define RESPONSIVENESS_COEFF 100   //  how fast changes in motion would affect game walking speed
-#define DEAD_ZONE 30               //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
+#define RESPONSIVENESS_COEFF 40   //  how fast changes in motion would affect game walking speed
+#define DEAD_ZONE 20              //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
                                             //  walking speed of 5 would result in game action of 35
-#define HYSTERESYS_COEFFICIENT 90  //  higher value results in more constant speed, but low sensitivity \
+#define HYSTERESYS_COEFFICIENT 20 //  higher value results in more constant speed, but low sensitivity \
                                             //  for speed change. Lower value results in high sensitivity to speed change, but unstable speed
-#define USE_DIGIPOT_REMAP 0        //  1 for on, 0 for off
-#define DIGIPOT_RESISTANCE_KOHM 50 //  resistance of installed digipot
+#define USE_DIGIPOT_REMAP 0       //  1 for on, 0 for off
+#define DIGIPOT_RESISTANCE_KOHM 5 //  resistance of installed digipot
 
 //====================================
 //  cruise control
