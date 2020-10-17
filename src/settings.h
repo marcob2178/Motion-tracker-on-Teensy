@@ -28,6 +28,12 @@ Please follow all instructions written near to the some setting or option.
 #define LEFT_VERTICAL_MAX 252
 #define LEFT_VERTICAL_MIDDLE 127
 
+//dead zone configuration, no negative, all absolute
+#define DEAD_ZONE_TOP       30
+#define DEAD_ZONE_BOTTOM    30
+#define DEAD_ZONE_RIGHT     30
+#define DEAD_ZONE_LEFT      30
+
 //========================================================================
 //  ALGORITHM SETTINGS
 //========================================================================

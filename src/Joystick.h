@@ -42,38 +42,38 @@ public:
         hor_middle = _hor_middle;
     }
 
-    void setVer(int x)
+    void setVer(int y)
     {
-        if (x > 0)
+        if (y > 0)
         {
-            pot0->setWiper1(map(x, 0, 100, ver_middle, ver_max));
+            pot0->setWiper1(map(y, 0, 100, ver_middle, ver_max));
             //Serial.println(map(x, 0, 100, ver_middle, VERTICAL_MAX));
         }
-        else if (x < 0)
+        else if (y < 0)
         {
-            pot0->setWiper1(map(x, 0, -100, ver_middle, ver_min));
+            pot0->setWiper1(map(y, 0, -100, ver_middle, ver_min));
             //Serial.println(map(x, 0, -100, ver_middle, ver_min));
         }
-        else if (x == 0)
+        else if (y == 0)
         {
             pot0->setWiper1(ver_middle);
             //Serial.println(ver_middle);
         }
     }
 
-    void setHor(int y)
+    void setHor(int x)
     {
-        if (y > 0)
+        if (x > 0)
         {
-            pot0->setWiper0(map(y, 0, 100, hor_middle, hor_max));
+            pot0->setWiper0(map(x, 0, 100, hor_middle, hor_max));
             //Serial.println(map(y, 0, 100, HORIZONT_MIDDLE, HORIZONT_MAX));
         }
-        else if (y < 0)
+        else if (x < 0)
         {
-            pot0->setWiper0(map(y, 0, -100, hor_middle, hor_min));
+            pot0->setWiper0(map(x, 0, -100, hor_middle, hor_min));
             //Serial.println(map(y, 0, -100, HORIZONT_MIDDLE, HORIZONT_MIN));
         }
-        else if (y == 0)
+        else if (x == 0)
         {
             pot0->setWiper0(hor_middle);
             //Serial.println(HORIZONT_MIDDLE);

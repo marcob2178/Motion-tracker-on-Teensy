@@ -426,7 +426,7 @@ void translateCruiseControl()
                  CRUISE_MIN_JOYSTICK_VALUE,
                  CRUISE_MAX_JOYSTICK_VALUE);
     ychanged = true;
-     left_y *= CRUISE_Y_INVERTED;
+    left_y *= CRUISE_Y_INVERTED;
   }
 }
 
@@ -531,6 +531,16 @@ void updateJoysticks()
     right_y = 100;
   if (right_y < -100)
     right_y = -100;
+
+  if (left_y < 0)
+    left_y = map(left_y, 0, -100, -DEAD_ZONE_BOTTOM, -100);
+  else if (left_y > 0)
+    left_y = map(left_y, 0, 100, DEAD_ZONE_TOP, 100);
+
+  if (left_x < 0)
+    left_x = map(left_x, 0, -100, -DEAD_ZONE_RIGHT, -100);
+  else if (left_x > 0)
+    left_x = map(left_x, 0, 100, DEAD_ZONE_LEFT, 100);
 
   leftJoystick.setVer(left_y * ALL_AXE_Y_INVERTED);
   leftJoystick.setHor(left_x * ALL_AXE_X_INVERTED);
