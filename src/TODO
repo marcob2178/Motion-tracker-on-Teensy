@@ -1,19 +1,13 @@
 #IGOR
 
 - jump. we did not test it again after fixed the button issue
-
 - crouch detection (System should be able to recognise when the human is going down to crouch - verical movement) / maybe use external cameras
-
 - vr driver injection
-
 - create gui
-
 - wireless system
-
 - lateral movement bug. I move for ex right and I see that when I reach the farthese position, if Ikeep moving right, the dot goes in crazy positions. I can show you. Would like to understadnd how I can fine tune that and if maybe can be added such fine tuning in gthe seting.
-
-
 - optimize walk/run algorithm / continue fine tuning code for locomotion features
+- add indication for calibrating
 
 a) when I move backwards, even if I just slide flat my feet on the floor back, the accelerometer pick up that movement as a walk forward. Wonder if we can find a solution for it so that accelerometer does not pick up walking when I move backwards
 
