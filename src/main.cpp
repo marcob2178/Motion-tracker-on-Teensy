@@ -382,26 +382,6 @@ void translateBending()
   }
 }
 
-// void translateBending()
-// {
-//   if (chest->isBending())
-//   {
-//     //if(chestAccel->getRoll() <CHEST_BACKWARD_MIN)
-//     if (chestAccel->getRoentOutput = 0;ll() < 0)
-//       left_y = map(-chestAccel->getRoll(), 0, CHEST_BACKWARD_MAX, 0, -100);
-//     else
-//       left_y = map(-chestAccel->getRoll(), 0, -CHEST_FORWARD_MAX, 0, 100);
-
-//     //calculating of right-left/horizontal movement
-//     if (chestAccel->getPitch() < 0)
-//       left_x = map(-chestAccel->getPitch(), 0, CHEST_RIGHT_MAX, 0, 100);
-//     else
-//       left_x = map(-chestAccel->getPitch(), 0, -CHEST_LEFT_MAX, 0, -100);
-//     xchanged = true;
-//     ychanged = true;
-//   }
-// }
-
 void translateCruiseControl()
 {
   rightFoot->isWalking();
