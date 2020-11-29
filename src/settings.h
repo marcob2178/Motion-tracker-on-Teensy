@@ -29,10 +29,10 @@ Please follow all instructions written near to the some setting or option.
 #define LEFT_VERTICAL_MIDDLE 127
 
 //dead zone configuration, no negative, all absolute
-#define DEAD_ZONE_TOP       30
-#define DEAD_ZONE_BOTTOM    30
-#define DEAD_ZONE_RIGHT     30
-#define DEAD_ZONE_LEFT      30
+#define DEAD_ZONE_TOP       0
+#define DEAD_ZONE_BOTTOM    0
+#define DEAD_ZONE_RIGHT     0
+#define DEAD_ZONE_LEFT      0
 
 //========================================================================
 //  ALGORITHM SETTINGS
@@ -73,9 +73,20 @@ Please follow all instructions written near to the some setting or option.
 //  jump
 #define MINIMUM_JUMP_POWER 10
 
+#define DURATION_OF_PRESSING 100
+#define MINIMUM_TIME_BETWEEN_JUMPS 500
+
+//====================================
+//  crouch
+#define RIGHT_FLEXIBLE_SENSOR_VALUE     1000    //minimum value, before detecting crouch, range is 0-1024
+#define LEFT_FLEXIBLE_SENSOR_VALUE      270
+#define JOYSTICK_CROUCH_VALUE           100     //decide how far it goes for crouch, and which 
+#define JOYSTICK_CROUCH_INVERTED        INVERTED       //inverting, 
+
+
 //====================================
 //  running setting
-#define MINIMUM_VALUE_FOR_RUNNING 110
+#define MINIMUM_VALUE_FOR_RUNNING 105
 
 //====================================
 //  chest bending algorithm, no negative values, use absolute. Takes an effect to USUAL BENDING algorithm!!
@@ -105,18 +116,18 @@ Please follow all instructions written near to the some setting or option.
 //====================================
 //  walking algorithm tunning
 //  tunable parameters - all defined for range 0-100
-#define WALK_SENSITIVITY 25       //  physical movement intensity to game walking speed \
+#define WALK_SENSITIVITY 30       //  physical movement intensity to game walking speed \
                                             //  higher value - less motion required to move faster
-#define RESPONSIVENESS_COEFF 40   //  how fast changes in motion would affect game walking speed
-#define DEAD_ZONE 20              //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
+#define RESPONSIVENESS_COEFF 20   //  how fast changes in motion would affect game walking speed
+#define DEAD_ZONE 15             //  minimal non-zero motion would result in this speed, if dead_zone = 30 then \
                                             //  walking speed of 5 would result in game action of 35
-#define HYSTERESYS_COEFFICIENT 20 //  higher value results in more constant speed, but low sensitivity \
+#define HYSTERESYS_COEFFICIENT 95 //  higher value results in more constant speed, but low sensitivity \
                                             //  for speed change. Lower value results in high sensitivity to speed change, but unstable speed
 #define USE_DIGIPOT_REMAP 0       //  1 for on, 0 for off
 #define DIGIPOT_RESISTANCE_KOHM 5 //  resistance of installed digipot
 
 //====================================
-//  cruise control
+//  cruise controle 
 #define CRUISE_MIN_ANGLE 10
 #define CRUISE_MAX_ANGLE 40
 #define CRUISE_MIN_JOYSTICK_VALUE 25
@@ -144,9 +155,10 @@ Please follow all instructions written near to the some setting or option.
 //  Pinout for TEENSY (do not edit without serious purpose)
 //========================================================================
 
+#define RIGHT_FLEXIBLE_SENSOR_PIN   A8
+#define LEFT_FLEXIBLE_SENSOR_PIN    A9
 #define LEFT_BUTTON_PIN 4
-#define RIGHT_BUTTON_PIN 7
-#define CHEST_ACCEL_INT_PIN 8
+#define RIGHT_BUTTON_PIN 9
 #define POT_0_CS 6
 #define POT_1_CS 5
 #define Sensor_BR A1
@@ -162,7 +174,7 @@ Please follow all instructions written near to the some setting or option.
 #define LEFT_ACCEL_TWI_ADRESS 0x29
 #define CHEST_ACCEL_TWI_ADRESS 0x28
 
-#define CUSTON_UART_SPEED 2000000
+#define CUSTOM_UART_SPEED 2000000
 #define CUSTOM_WIRE_SPEED 400000
 #define CUSTOM_WIRE1_SPEED 400000
 #define CUSTOM_SPI_CLOCK_DIVIDER SPI_CLOCK_DIV16

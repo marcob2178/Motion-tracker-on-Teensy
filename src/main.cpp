@@ -12,18 +12,16 @@
 TODO: 
 
 
-2) add setting for invert axes on all sensors
-
-3) add in setting ps4/vr controller pressing button swith setup
-
 What is on the milestone list is this:  
 
 - clean code 
 - optimize walk/run algorithm / continue fine tuning code for locomotion features
 - create gui
-- crouch detection (System should be able to recognise when the human is going down to crouch - verical movement) / maybe use external cameras
+- crouch detection (System should be able to recognise when the human is going down to crouch - verical movement) / maybe use external cameras / use flex sensors at knees
 - vr driver injection
 - wireless system
+- add calibration light
+- add f letter fot showing flex sensors output
 
 STACK:
 - usb injection (https://github.com/TrueOpenVR/TrueOpenVR-Drivers)  
@@ -71,10 +69,11 @@ Foot *leftFoot;
 
 void setup()
 {
-  Serial.begin(CUSTON_UART_SPEED);
-
+  Serial.begin(CUSTOM_UART_SPEED);
+  Serial2.begin(9600);
   ;
   Serial.println("Started!");
+  Serial2.println("Started!");
 
   Wire.begin();
   Wire.setClock(CUSTOM_WIRE_SPEED);
@@ -262,6 +261,7 @@ float walk_speed = 0;
 
 void translateWalking()
 {
+  //getting vectors a1 and a2
   float ax1 = rightShoeAccel->getLinX();
   float ay1 = rightShoeAccel->getLinY();
   float az1 = rightShoeAccel->getLinZ();
@@ -466,9 +466,6 @@ void translateTheMovement()
   if (!ychanged)
     left_y = 0;
 
-  right_x = 0;
-  right_y = 0;
-
   //if running very fast - press the button
   if ((abs(left_x) >= MINIMUM_VALUE_FOR_RUNNING) || (abs(left_y) >= MINIMUM_VALUE_FOR_RUNNING))
     left_button_state = 1;
@@ -480,6 +477,28 @@ void translateTheMovement()
     right_button_state = 1;
   else
     right_button_state = 0;
+
+  //crouch
+
+  int rightFlex = analogRead(RIGHT_FLEXIBLE_SENSOR_PIN);
+  int leftFlex = analogRead(LEFT_FLEXIBLE_SENSOR_PIN);
+  Serial.print("right flexsensor: ");
+  Serial.print(rightFlex);
+  Serial.print(", left flexsensor1: ");
+  Serial.println(leftFlex);
+
+  if (rightFlex > RIGHT_FLEXIBLE_SENSOR_VALUE || leftFlex > LEFT_FLEXIBLE_SENSOR_VALUE)
+  {
+    //right_button_state = 1;
+    right_x = 0;
+    right_y = JOYSTICK_CROUCH_VALUE * JOYSTICK_CROUCH_INVERTED;
+  }
+  else
+  {
+    //right_button_state = 0;
+    right_x = 0;
+    right_y = 0;
+  }
 
   updateJoysticks();
 
@@ -573,7 +592,7 @@ void printTheMovement()
       Serial.print(String("\t") + chest->getBendingPower());
     }
 
-    //crouch output F
+    //crouch output
 
     // Serial.print("\tCrouch:");
     // if (isCrouch())

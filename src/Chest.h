@@ -43,9 +43,24 @@ public:
         return -chestSensors->getLinZ() /*> 0  ? chestSensors->getLinZ() : 0*/;
     }
 
-    double isJumping()
+    long timer = MINIMUM_TIME_BETWEEN_JUMPS;
+    bool isJumping()
     {
-        return getJumpingPower() > MINIMUM_JUMP_POWER;
+        bool jumpPower = getJumpingPower() > MINIMUM_JUMP_POWER;
+        if (jumpPower && (timer > MINIMUM_TIME_BETWEEN_JUMPS))
+        {
+            timer = 0;
+            return true;
+        }
+
+        else
+        {
+            timer += CALCULATING_PERIOD;
+            if (timer < DURATION_OF_PRESSING)
+                return true;
+            else
+                return false;
+        }
     }
     //===========================================================
     //  bend logic
