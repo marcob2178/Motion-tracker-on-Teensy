@@ -39,6 +39,7 @@ STACK:
 #define MOVEMENT_LEFT_OUTPUT 6
 #define MOVEMENT_TRANSLATING_OUTPUT 7
 #define TIMING_OUTPUT 8
+#define FLEXIBLE_SENSORS_OUTPUT 9
 int currentOutput = 0;
 
 void printAcceleration();
@@ -53,6 +54,7 @@ void translateTheMovement();
 void parseSerial();
 void printTheMovement();
 void updateJoysticks();
+void updateVRInjection();
 
 Joystick leftJoystick;  //run and move direction control
 Joystick rightJoystick; //jump and crouch
@@ -67,10 +69,17 @@ Chest *chest;
 Foot *rightFoot;
 Foot *leftFoot;
 
+int vr_right_x = 0;
+int vr_right_y = 0;
+int vr_right_b = 0;
+int vr_left_x = 0;
+int vr_left_y = 0;
+int vr_left_b = 0;
+
 void setup()
 {
   Serial.begin(CUSTOM_UART_SPEED);
-  Serial2.begin(9600);
+  Serial2.begin(256000);
   ;
   Serial.println("Started!");
   Serial2.println("Started!");
@@ -136,26 +145,39 @@ void setup()
   Serial.println("Program started!");
 }
 
-long long timer = 0;
+long long timerMeasuring = 0;
+long long timerOutput = 0;
 void loop()
 {
-  if (millis() > timer)
+  if (millis() > timerMeasuring)
   {
-    timer = millis() + CALCULATING_PERIOD;
+    timerMeasuring = millis() + CALCULATING_PERIOD;
     updateRawData();
 
     if (currentOutput == TIMING_OUTPUT)
     {
-      long time = CALCULATING_PERIOD - (timer - millis());
+      long time = CALCULATING_PERIOD - (timerMeasuring - millis());
       Serial.println(String(time));
     }
 
-    parseSerial();
-    printTheMovement();
-    translateTheMovement();
+    parseSerial();          //parsing output for debug purpose
+    printTheMovement();     //print movement state in console if it's enabled
+    translateTheMovement(); //convert raw data to joystick positions, button pressing and etc.
+  }
+
+  //vr injection, see OUTPUT_PERIOD to change update rate
+  if (millis() > timerOutput)
+  {
+    timerOutput = millis() + OUTPUT_PERIOD;
+
+    char buffer[256];
+    sprintf(buffer, "%i;%i;%i;%i;%i;%i", vr_right_x, vr_right_y, vr_right_b, vr_left_x, vr_left_y, vr_left_b);
+
+    Serial2.println(buffer);
   }
 }
 
+//what is this???
 //   printAccelerationOffset();
 //   calculate();
 
@@ -171,24 +193,26 @@ void parseSerial()
   if (Serial.available() > 0)
   {
     char mess = Serial.read();
-    if (mess == 'r')
+    if (mess == RIGHT_SHOE_OUTPUT_CHAR)
       currentOutput = RIGHT_SHOE_OUTPUT;
-    if (mess == 'l')
+    if (mess == LEFT_SHOE_OUTPUT_CHAR)
       currentOutput = LEFT_SHOE_OUTPUT;
-    if (mess == 'c')
+    if (mess == CHEST_OUTPUT_CHAR)
       currentOutput = CHEST_OUTPUT;
-    if (mess == 'm')
+    if (mess == MOVEMENT_CHEST_OUTPUT_CHAR)
       currentOutput = MOVEMENT_CHEST_OUTPUT;
-    if (mess == '.')
+    if (mess == MOVEMENT_RIGHT_OUTPUT_CHAR)
       currentOutput = MOVEMENT_RIGHT_OUTPUT;
-    if (mess == ',')
+    if (mess == MOVEMENT_LEFT_OUTPUT_CHAR)
       currentOutput = MOVEMENT_LEFT_OUTPUT;
-    if (mess == 'n')
+    if (mess == NO_OUTPUT_CHAR)
       currentOutput = NO_OUTPUT;
-    if (mess == 't')
+    if (mess == MOVEMENT_TRANSLATING_OUTPUT_CHAR)
       currentOutput = MOVEMENT_TRANSLATING_OUTPUT;
-    if (mess == 'u')
+    if (mess == TIMING_OUTPUT_CHAR)
       currentOutput = TIMING_OUTPUT;
+    if (mess == FLEXIBLE_SENSORS_OUTPUT_CHAR)
+      currentOutput = FLEXIBLE_SENSORS_OUTPUT;
 
     // for testing purpoe, should be ignored
     if (mess == '1')
@@ -482,10 +506,14 @@ void translateTheMovement()
 
   int rightFlex = analogRead(RIGHT_FLEXIBLE_SENSOR_PIN);
   int leftFlex = analogRead(LEFT_FLEXIBLE_SENSOR_PIN);
-  Serial.print("right flexsensor: ");
-  Serial.print(rightFlex);
-  Serial.print(", left flexsensor1: ");
-  Serial.println(leftFlex);
+
+  if (currentOutput == FLEXIBLE_SENSORS_OUTPUT)
+  {
+    Serial.print("right flexsensor: ");
+    Serial.print(rightFlex);
+    Serial.print(", left flexsensor1: ");
+    Serial.println(leftFlex);
+  }
 
   if (rightFlex > RIGHT_FLEXIBLE_SENSOR_VALUE || leftFlex > LEFT_FLEXIBLE_SENSOR_VALUE)
   {
@@ -531,6 +559,18 @@ void updateJoysticks()
   if (right_y < -100)
     right_y = -100;
 
+  if (left_button_state == 1)
+    leftJoystick.pressButton();
+  else
+    leftJoystick.releaseButton();
+
+  if (right_button_state == 1)
+    rightJoystick.pressButton();
+  else
+    rightJoystick.releaseButton();
+
+  updateVRInjection();
+
   if (left_y < 0)
     left_y = map(left_y, 0, -100, -DEAD_ZONE_BOTTOM, -100);
   else if (left_y > 0)
@@ -544,18 +584,18 @@ void updateJoysticks()
   leftJoystick.setVer(left_y * ALL_AXE_Y_INVERTED);
   leftJoystick.setHor(left_x * ALL_AXE_X_INVERTED);
 
-  if (left_button_state == 1)
-    leftJoystick.pressButton();
-  else
-    leftJoystick.releaseButton();
-
   rightJoystick.setHor(right_x);
   rightJoystick.setVer(right_y);
+}
 
-  if (right_button_state == 1)
-    rightJoystick.pressButton();
-  else
-    rightJoystick.releaseButton();
+void updateVRInjection()
+{
+  vr_right_x = 0;
+  vr_right_y = 0;
+  vr_right_b = right_button_state;
+  vr_left_x = left_x;
+  vr_left_y = left_y;
+  vr_left_b = left_button_state;
 }
 
 //=====================================================================

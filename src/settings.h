@@ -6,6 +6,23 @@ All this section is related to algorithm and code tuning,
 Please follow all instructions written near to the some setting or option.
 */
 
+
+//========================================================================
+//  OUTPUT KEYBOARD MAP
+//========================================================================
+
+//change to any key, note: 'a' and 'A' are different commands
+#define NO_OUTPUT_CHAR 'n'                      //press if you don't want to see out
+#define RIGHT_SHOE_OUTPUT_CHAR 'r'
+#define LEFT_SHOE_OUTPUT_CHAR 'l'
+#define CHEST_OUTPUT_CHAR 'c'
+#define MOVEMENT_CHEST_OUTPUT_CHAR 'm'
+#define MOVEMENT_RIGHT_OUTPUT_CHAR '.'
+#define MOVEMENT_LEFT_OUTPUT_CHAR ','
+#define MOVEMENT_TRANSLATING_OUTPUT_CHAR 't'
+#define TIMING_OUTPUT_CHAR 'u'
+#define FLEXIBLE_SENSORS_OUTPUT_CHAR 'f'
+
 //========================================================================
 //  JOYSTICK
 //========================================================================
@@ -62,6 +79,7 @@ Please follow all instructions written near to the some setting or option.
 //====================================
 //  main settings
 #define CALCULATING_PERIOD 10 //  DANGEROUS TO CHANGE!!! that's period of the all measuring
+#define OUTPUT_PERIOD 17        //  Means how fast will steam vr driver updates the values, value in milliseconds
 #define FEET_ANGLE 10         //  minimum angle of step detecting
 
 //====================================
