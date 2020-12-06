@@ -79,7 +79,7 @@ int vr_left_b = 0;
 void setup()
 {
   Serial.begin(CUSTOM_UART_SPEED);
-  Serial2.begin(256000);
+  Serial2.begin(115200);
   ;
   Serial.println("Started!");
   Serial2.println("Started!");
