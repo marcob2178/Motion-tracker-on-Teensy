@@ -19,7 +19,6 @@ What is on the milestone list is this:
 - create gui
 - crouch detection (System should be able to recognise when the human is going down to crouch - verical movement) / maybe use external cameras / use flex sensors at knees
 - vr driver injection
-- wireless system
 - add calibration light
 - add f letter fot showing flex sensors output
 
@@ -82,7 +81,7 @@ void setup()
   Serial2.begin(115200);
   ;
   Serial.println("Started!");
-  Serial2.println("Started!");
+  // Serial2.println("Started!");
 
   Wire.begin();
   Wire.setClock(CUSTOM_WIRE_SPEED);
