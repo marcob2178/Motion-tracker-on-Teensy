@@ -53,7 +53,6 @@ void translateTheMovement();
 void parseSerial();
 void printTheMovement();
 void updateJoysticks();
-void updateVRInjection();
 
 Joystick leftJoystick;  //run and move direction control
 Joystick rightJoystick; //jump and crouch
@@ -68,18 +67,19 @@ Chest *chest;
 Foot *rightFoot;
 Foot *leftFoot;
 
-int vr_right_x = 0;
-int vr_right_y = 0;
-int vr_right_b = 0;
-int vr_left_x = 0;
-int vr_left_y = 0;
-int vr_left_b = 0;
+int vr_move_x = 0;
+int vr_move_y = 0;
+int vr_jump = 0;
+int vr_crouch = 0;
+int vr_run = 0;
 
 void setup()
 {
+  pinMode(0, INPUT_PULLUP);
   Serial.begin(CUSTOM_UART_SPEED);
   Serial2.begin(115200);
-  ;
+  Serial1.begin(115200);
+  
   Serial.println("Started!");
   // Serial2.println("Started!");
 
@@ -170,18 +170,17 @@ void loop()
     timerOutput = millis() + OUTPUT_PERIOD;
 
     char buffer[256];
-    sprintf(buffer, "%i;%i;%i;%i;%i;%i", vr_right_x, vr_right_y, vr_right_b, vr_left_x, vr_left_y, vr_left_b);
+    //move x -100 .. 100
+    //move y -100 .. 100
+    //jump 0 .. 1
+    //crouch 0 .. 1
 
+    sprintf(buffer, "%i;%i;%i;%i;%i", vr_move_x, vr_move_y, vr_jump, vr_crouch, vr_run);
+
+    Serial1.println(buffer);
     Serial2.println(buffer);
   }
 }
-
-//what is this???
-//   printAccelerationOffset();
-//   calculate();
-
-//   //Serial.println("\tLoop time = " + String(int(timer - millis())));
-// }
 
 //=====================================================================
 //  Serial Controller
@@ -354,9 +353,9 @@ void translateWalking()
     accum_err = 0;
   }
 
-  if (walk_speed > 120)
-    walk_speed = 120;
-  if (walk_speed < 10)
+  if (walk_speed > 90)
+    walk_speed = 90;
+  if (walk_speed < 20)
     walk_speed = 0;
   if (walk_speed > 0 && walk_speed < 2 * DEAD_ZONE)
     walk_speed = DEAD_ZONE + walk_speed * 0.5;
@@ -471,17 +470,30 @@ void translateTheMovement()
   xchanged = false;
   ychanged = false;
   //bending control
-  translateBending();
+  if (digitalRead(0) == HIGH)
+  {
+    translateBending();
+  }
   //walking
-  translateWalking();
-
+  if (digitalRead(0) == HIGH)
+  {
+    translateWalking();
+  }
   //cruise control
-  translateCruiseControl();
+  if (digitalRead(0) == HIGH)
+  {
+    translateCruiseControl();
+  }
   //side moving
-  translateSideMoving();
+  if (digitalRead(0) == HIGH)
+  {
+    translateSideMoving();
+  }
   //back moving
-  translateBackMoving();
-
+  if (digitalRead(0) == HIGH)
+  {
+    translateBackMoving();
+  }
   //default for moving left joystick
 
   if (!xchanged)
@@ -491,15 +503,36 @@ void translateTheMovement()
 
   //if running very fast - press the button
   if ((abs(left_x) >= MINIMUM_VALUE_FOR_RUNNING) || (abs(left_y) >= MINIMUM_VALUE_FOR_RUNNING))
+  {
+    //vr injection
+    vr_run = 1;
     left_button_state = 1;
+  }
   else
+  {
+    //vr injection
+    vr_run = 0;
     left_button_state = 0;
+  }
 
   //jump
   if (chest->isJumping())
+  {
+    //vr injection
+    vr_jump = 1;
     right_button_state = 1;
+  }
   else
+  {
+    //vr injection
+    vr_jump = 0;
     right_button_state = 0;
+  }
+  if (digitalRead(0) == LOW)
+  {
+    vr_jump = 0;
+    right_button_state = 0;
+  }
 
   //crouch
 
@@ -516,17 +549,24 @@ void translateTheMovement()
 
   if (rightFlex > RIGHT_FLEXIBLE_SENSOR_VALUE || leftFlex > LEFT_FLEXIBLE_SENSOR_VALUE)
   {
-    //right_button_state = 1;
+    //vr injection
+    vr_crouch = 1;
     right_x = 0;
     right_y = JOYSTICK_CROUCH_VALUE * JOYSTICK_CROUCH_INVERTED;
   }
   else
   {
-    //right_button_state = 0;
+    //vr injection
+    vr_crouch = 0;
     right_x = 0;
     right_y = 0;
   }
-
+  if (digitalRead(0) == LOW)
+  {
+    vr_crouch = 0;
+    right_x = 0;
+    right_y = 0;
+  }
   updateJoysticks();
 
   if (currentOutput == MOVEMENT_TRANSLATING_OUTPUT)
@@ -558,6 +598,10 @@ void updateJoysticks()
   if (right_y < -100)
     right_y = -100;
 
+  //vr injection
+  vr_move_x = left_x;
+  vr_move_y = left_y;
+
   if (left_button_state == 1)
     leftJoystick.pressButton();
   else
@@ -567,8 +611,6 @@ void updateJoysticks()
     rightJoystick.pressButton();
   else
     rightJoystick.releaseButton();
-
-  updateVRInjection();
 
   if (left_y < 0)
     left_y = map(left_y, 0, -100, -DEAD_ZONE_BOTTOM, -100);
@@ -585,16 +627,6 @@ void updateJoysticks()
 
   rightJoystick.setHor(right_x);
   rightJoystick.setVer(right_y);
-}
-
-void updateVRInjection()
-{
-  vr_right_x = 0;
-  vr_right_y = 0;
-  vr_right_b = right_button_state;
-  vr_left_x = left_x;
-  vr_left_y = left_y;
-  vr_left_b = left_button_state;
 }
 
 //=====================================================================
