@@ -97,7 +97,7 @@ Please follow all instructions written near to the some setting or option.
 //====================================
 //  crouch
 #define RIGHT_FLEXIBLE_SENSOR_VALUE     1000    //minimum value, before detecting crouch, range is 0-1024
-#define LEFT_FLEXIBLE_SENSOR_VALUE      1000
+#define LEFT_FLEXIBLE_SENSOR_VALUE      270
 #define JOYSTICK_CROUCH_VALUE           100     //decide how far it goes for crouch, and which 
 #define JOYSTICK_CROUCH_INVERTED        INVERTED       //inverting, 
 

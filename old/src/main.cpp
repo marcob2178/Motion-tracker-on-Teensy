@@ -75,11 +75,12 @@ int vr_run = 0;
 
 void setup()
 {
-  pinMode(10, INPUT_PULLUP);
-  Serial.begin(CUSTOM_UART_SPEED);
-  Serial1.begin(115200);
-  Serial2.begin(115200);
-  ;
+  delay(5000);
+  pinMode(0, INPUT_PULLUP);
+  Serial.begin(115200);
+  //Serial2.begin(115200);
+  //Serial1.begin(115200);
+  
   Serial.println("Started!");
   // Serial2.println("Started!");
 
@@ -175,10 +176,10 @@ void loop()
     //jump 0 .. 1
     //crouch 0 .. 1
 
-    sprintf(buffer, "%i;%i;%i;%i;%i", vr_move_x, vr_move_y, vr_jump, vr_crouch, vr_run);
+    //sprintf(buffer, "%i;%i;%i;%i;%i", vr_move_x, vr_move_y, vr_jump, vr_crouch, vr_run);
 
-    Serial1.println(buffer);
-    Serial2.println(buffer);
+    //Serial1.println(buffer);
+    //Serial2.println(buffer);
   }
 }
 
@@ -469,21 +470,31 @@ void translateTheMovement()
 {
   xchanged = false;
   ychanged = false;
-
-  if (digitalRead(10) == HIGH)
+  //bending control
+  if (digitalRead(0) == HIGH)
   {
-    //bending control
     translateBending();
-    //walking
+  }
+  //walking
+  if (digitalRead(0) == HIGH)
+  {
     translateWalking();
-    //cruise control
+  }
+  //cruise control
+  if (digitalRead(0) == HIGH)
+  {
     translateCruiseControl();
-    //side moving
+  }
+  //side moving
+  if (digitalRead(0) == HIGH)
+  {
     translateSideMoving();
-    //back moving
+  }
+  //back moving
+  if (digitalRead(0) == HIGH)
+  {
     translateBackMoving();
   }
-  
   //default for moving left joystick
 
   if (!xchanged)
@@ -518,7 +529,7 @@ void translateTheMovement()
     vr_jump = 0;
     right_button_state = 0;
   }
-  if (digitalRead(10) == LOW)
+  if (digitalRead(0) == LOW)
   {
     vr_jump = 0;
     right_button_state = 0;
@@ -551,7 +562,7 @@ void translateTheMovement()
     right_x = 0;
     right_y = 0;
   }
-  if (digitalRead(10) == LOW)
+  if (digitalRead(0) == LOW)
   {
     vr_crouch = 0;
     right_x = 0;
@@ -561,7 +572,8 @@ void translateTheMovement()
 
   if (currentOutput == MOVEMENT_TRANSLATING_OUTPUT)
   {
-    Serial.println("Left joy:\t" + String(left_x) + "\t" + String(left_y) + "\t" + "\t" + String(left_button_state) + "\t" + "Right joy:\t" + String(right_x) + "\t" + String(right_y) + "\t" + "\t" + String(right_button_state) + "\t");
+    Serial.print("Left joystick:\t" + String(left_x) + "\t" + String(left_y) + "\t" + "button\t" + String(left_button_state) + "\t");
+    Serial.println("Right joystick:\t" + String(right_x) + "\t" + String(right_y) + "\t" + "button\t" + String(right_button_state) + "\t");
   }
 }
 
